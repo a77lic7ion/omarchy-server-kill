@@ -253,7 +253,7 @@ Panel {
 
               Text {
                 visible: (stack.description || "") !== ""
-                width: parent.width
+                Layout.fillWidth: true
                 text: stack.description
                 color: root.dim
                 font.family: root.fontFamily
