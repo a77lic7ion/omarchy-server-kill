@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "shaun.server-kill",
+  "name": "Server Kill",
+  "version": "1.1.0",
+  "author": "Shaun Gordon",
+  "license": "MIT",
+  "description": "Lists listening servers with their ports, PID, local + Tailscale IP URLs and Kill buttons.",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Server Kill",
+    "description": "Listening servers, ports, PID, IPs (local + Tailscale) and KILL buttons.",
+    "category": "System",
+    "allowMultiple": false,
+    "defaultSection": "left",
+    "defaults": {
+      "refreshSec": 30
+    },
+    "schema": [
+      {
+        "key": "refreshSec",
+        "type": "integer",
+        "label": "Refresh interval (seconds)",
+        "min": 5,
+        "max": 600,
+        "step": 5,
+        "defaultValue": 30
+      }
+    ]
+  },
+  "keepLoaded": true
+}
