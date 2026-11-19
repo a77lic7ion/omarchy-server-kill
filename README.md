@@ -15,6 +15,7 @@ Plugin id: `shaun.server-kill`
 - **Kill** button per server:
   - systemd-backed servers → `systemctl --user stop <unit>` — the whole process family goes down and **stays down** until you start it again or reboot
   - everything else → kills the process family cleanly (SIGTERM, then SIGKILL if needed)
+  - raw-process kills are **PID-reuse safe**: the process start time recorded at scan is re-checked immediately before every signal, so a recycled or changed PID is refused, never killed
 - **Stacks**: register related services as one stack (several units, containers, helpers). The panel then shows a single card with one Kill — and when the stack is stopped, a **Start** button that brings everything back
 - Session-critical services (your compositor's session, etc.) are never stopped through systemd
 - Auto-refreshes every 30 seconds (configurable per widget), right-click the bar icon to refresh, `R` refreshes in the panel
@@ -77,7 +78,7 @@ on purpose. Stops are sticky — a stack stays stopped until you Start it again 
 
 ## Notes on what it touches
 
-- **Reads**: `ss` output, `/proc` (process names, systemd units), `systemctl --user is-active`, Tailscale status, and `stacks.json`
+- **Reads**: `ss` output, `/proc` (process names, start times, systemd units), `systemctl --user is-active`, Tailscale status, and `stacks.json`
 - **Commands run**: bundled `python3` helpers; `systemctl --user stop/start` for service-backed servers; the commands you write in `stacks.json`
 - **Writes**: nothing outside your own services and processes — the widget never edits your config. No network access, no telemetry, everything runs as your user (no root)
 

@@ -46,7 +46,9 @@ Item {
     if (unit !== "" && server.stoppable !== false) {
       runAction("Stopping " + (server.name || "service") + "…", ["systemctl", "--user", "stop", unit])
     } else if (p > 0) {
-      runAction("Killing " + (server.name || "process") + "…", ["python3", binPath + "/kill-tree.py", String(p)])
+      // start-time token from the scan: kill-tree.py verifies it, so a recycled PID is never killed
+      var st = parseInt(String(server.starttime === undefined || server.starttime === null ? "" : server.starttime), 10)
+      runAction("Killing " + (server.name || "process") + "…", ["python3", binPath + "/kill-tree.py", String(p), String(isNaN(st) ? -1 : st)])
     }
   }
 

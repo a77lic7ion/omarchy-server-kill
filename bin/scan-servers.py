@@ -82,6 +82,21 @@ def read_proc(pid):
     return comm, cmdline, cwd
 
 
+def read_starttime(pid):
+    """Process start time in clock ticks since boot (field 22 of /proc/<pid>/stat).
+
+    Together with the PID it identifies one specific process instance; the
+    kill helper verifies it before signalling, so a recycled PID is refused
+    rather than killed.
+    """
+    try:
+        with open(f"/proc/{pid}/stat", "rb") as f:
+            data = f.read()
+        return int(data.rsplit(b")", 1)[1].split()[19])
+    except Exception:
+        return -1
+
+
 def read_unit(pid):
     """Innermost systemd service unit owning the pid ('' when none/session scope)."""
     try:
@@ -296,6 +311,7 @@ def scan(local_ips, ts_ip):
         servers.append({
             "name": guess_name(comm, cmdline, cwd),
             "pid": pid,
+            "starttime": read_starttime(pid),
             "unit": read_unit(pid),
             "ports": sorted(e["ports"]),
             "wildcard": wildcard,
